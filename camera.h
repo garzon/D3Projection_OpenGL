@@ -11,6 +11,7 @@ class Camera {
 public:
     float theta, phi; // angles of camera
     float focalLen;
+    int pixelsX, pixelsY;
     cv::Vec3f pos, focalVec, baseX, baseZ;
 
     Camera(float focalLength, float FOVX, float FOVY);

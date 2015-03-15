@@ -13,6 +13,7 @@ class Scene {
         inline void _calcCamParam(const Camera &cam);
     public:
         cv::Mat invMat, camParam;
+        int pixelsX, pixelsY;
         CameraInfo(const Camera &cam);
     };
     inline static cv::Vec2f _transformPoint(const CameraInfo &info, const cv::Vec3f &point);

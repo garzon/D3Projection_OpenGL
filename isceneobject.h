@@ -13,7 +13,7 @@ protected:
 
 public:
     // method need to be overrided
-    virtual void render(cv::Mat&) {
+    virtual void render(cv::Mat&) const {
         throw "ISceneObject::render() called. You should override the method in child class.";
     }
 

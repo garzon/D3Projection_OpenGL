@@ -2,9 +2,12 @@
 
 using namespace d3Projection;
 
-Camera::Camera(float focalLength, float FOVX, float FOVY) :
-    checkAng(false), checkPos(false), focalLen(focalLength)
-{}
+Camera::Camera(float focalLength, float FOVX, float FOVY, int _pixelsX, int _pixelsY) :
+    checkAng(false), checkPos(false), focalLen(focalLength),
+    pixelsX(_pixelsX), pixelsY(_pixelsY)
+{
+    // TODO: Gram－Schmidt method
+}
 
 void Camera::setPosition(const cv::Vec3f &_pos) {
     pos = _pos;

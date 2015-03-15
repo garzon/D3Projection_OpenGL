@@ -3,7 +3,7 @@
 using namespace d3Projection;
 
 Scene::CameraInfo::CameraInfo(const Camera &cam) :
-    invMat(0, 0, CV_32F)
+    invMat(0, 0, CV_32F), pixelsX(cam.pixelsX), pixelsY(cam.pixelsY)
 {
     _calcInvMat(cam);
     _calcCamParam(cam);
@@ -35,8 +35,8 @@ inline cv::Vec2f Scene::_transformPoint(const CameraInfo &info, const cv::Vec3f 
     cv::Mat res = info.camParam - info.invMat * cv::Mat(point);
     float *data = res.ptr<float>();
     cv::Vec2f ret;
-    ret[0] = data[0];
-    ret[1] = data[1];
+    ret[0] = data[0] * info.pixelsX;
+    ret[1] = data[1] * info.pixelsY;
     return ret;
 }
 
@@ -49,7 +49,7 @@ void Scene::transformObjects(const Camera &cam) {
     for(auto &obj: objs) {
         const std::vector<cv::Vec3f> &points = obj.getLocatingPoints();
         obj.clean();
-        for(auto point: points) {
+        for(const auto &point: points) {
             obj.pushLocatingPointProjected(_transformPoint(info, point));
         }
     }
@@ -58,7 +58,7 @@ void Scene::transformObjects(const Camera &cam) {
 cv::Mat Scene::render(const Camera &cam) {
     cv::Mat res;
     transformObjects(cam);
-    for(auto &obj: objs) {
+    for(const auto &obj: objs) {
         obj.render(res);
     }
     return res;
