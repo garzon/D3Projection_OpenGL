@@ -8,10 +8,10 @@ namespace d3Projection {
 
 class SphereObject : public ISceneObject {
     cv::Scalar _color;
-    float findRadiusProjected() const;
+    double findRadiusProjected() const;
 public:
-    SphereObject(const cv::Vec3f&, float, cv::Scalar&);
-    void render(cv::Mat&) const;
+    SphereObject(const cv::Vec3d &center, double radius, const cv::Scalar &color);
+    void render(cv::Mat &outputImage) const;
 };
 
 }
