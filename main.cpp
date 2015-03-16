@@ -24,6 +24,8 @@ int main() {
     Scene scene;
     scene.addObject(&s1); scene.addObject(&s2); scene.addObject(&s3); scene.addObject(&s4);
 
+    //cam.watch(Vec<double, 3>(0, 0, 0));
+
     while(true) {
 
         cam.setPosition(Vec<double, 3>(-5*cos(theta), -5*sin(theta), 0));

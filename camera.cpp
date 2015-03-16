@@ -3,7 +3,7 @@
 using namespace d3Projection;
 
 Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
-    checkAng(false), checkPos(false), focalLen(focalLength),
+    isLocked(false), checkAng(false), checkPos(false), focalLen(focalLength),
     pixelsX(_pixelsX), pixelsY(_pixelsY), FOVX(_FOVX), FOVY(_FOVY)
 {
 
@@ -19,6 +19,15 @@ Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int
 void Camera::setPosition(const cv::Vec3d &_pos) {
     pos = _pos;
     checkPos = true;
+    if(isLocked) {
+        cv::Vec3d diff = watchPoint - pos;
+        double phi = atan(diff[2] / (0.0000001+sqrt(diff[1]*diff[1] + diff[0]*diff[0])));
+        double theta = atan2(diff[1], diff[0]);
+        if(theta < 0) theta = 2*CV_PI + theta;
+        isLocked = false;
+        setAngle(theta, phi);
+        isLocked = true;
+    }
 }
 
 inline cv::Vec3d Camera::mat2Vec3d(const cv::Mat &expr) {
@@ -75,7 +84,17 @@ void Camera::_GramSchmidt() {
     baseY = baseY * focalLen * tan(FOVY) / cv::norm(baseY);
 }
 
+void Camera::watch(const cv::Vec3d &_watchPoint) {
+    watchPoint = _watchPoint;
+    isLocked = true;
+}
+
+void Camera::unwatch() {
+    isLocked = false;
+}
+
 void Camera::setAngle(double _theta, double _phi) {
+    if(isLocked) throw "Camera::setAngle - Exception: The camera is locked.";
     theta = _theta; phi = _phi;
     focalVec[0] = cos(theta)*cos(phi);
     focalVec[1] = sin(theta)*cos(phi);
