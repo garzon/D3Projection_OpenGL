@@ -13,7 +13,7 @@ class Scene {
 public:
     int addObject(ISceneObject *obj);
     void removeObject(int id);
-    cv::Mat render(const Camera &cam);
+    void render(const Camera &cam, cv::Mat &outputImage);
     inline static cv::Vec3d transformPoint(const Camera &cam, const cv::Vec3d &point);
 };
 

@@ -8,13 +8,15 @@ SOURCES += main.cpp \
     sphereobject.cpp \
     scene.cpp \
     camera.cpp \
-    isceneobject.cpp
+    isceneobject.cpp \
+    planeobject.cpp
 
 HEADERS += \
     sphereobject.h \
     scene.h \
     camera.h \
-    isceneobject.h
+    isceneobject.h \
+    planeobject.h
 
 
 LIBS += /usr/local/lib/libopencv*.so

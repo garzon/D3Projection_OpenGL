@@ -3,7 +3,7 @@
 using namespace d3Projection;
 
 Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
-    isLocked(false),
+    isLocked(false), hasOrbit(false),
     checkAng(false), checkPos(false), focalLen(focalLength),
     pixelsX(_pixelsX), pixelsY(_pixelsY), FOVX(_FOVX), FOVY(_FOVY)
 {
@@ -41,8 +41,8 @@ inline cv::Vec3d Camera::mat2Vec3d(const cv::Mat &expr) {
 }
 
 void Camera::_GramSchmidt() {
-    // TODO: Gram-Schmidt method
-    // buggy method now
+
+    // buggy method now, randomly choosen vector used.
 
     cv::Mat_<double> rotateMat1(0, 0);
     rotateMat1.push_back(cos(theta));
@@ -108,4 +108,27 @@ void Camera::setAngle(double _theta, double _phi) {
 
 bool Camera::check() const {
     return checkAng && checkPos;
+}
+
+void Camera::setOrbit(const std::function<cv::Vec3d (double)> &equation, const std::pair<double, double> &paramRange, double init, double step) {
+    _orbitFunc = equation;
+    _orbitParamRange = paramRange;
+    _step = step;
+    _orbitParam = init;
+    setPosition(_orbitFunc(init));
+    hasOrbit = true;
+}
+
+void Camera::updateOrbitParam(double newParamVal) {
+    _orbitParam = newParamVal;
+}
+
+bool Camera::updatePosition() {
+    if(!hasOrbit) throw "Camera::updatePosition() - Exception: The camera does not have orbit.";
+    _orbitParam += _step;
+    if(_orbitParam < _orbitParamRange.first || _orbitParam > _orbitParamRange.second) {
+        return false;
+    }
+    setPosition(_orbitFunc(_orbitParam));
+    return true;
 }
