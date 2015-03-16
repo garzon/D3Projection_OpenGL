@@ -3,7 +3,8 @@
 using namespace d3Projection;
 
 Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
-    isLocked(false), checkAng(false), checkPos(false), focalLen(focalLength),
+    isLocked(false),
+    checkAng(false), checkPos(false), focalLen(focalLength),
     pixelsX(_pixelsX), pixelsY(_pixelsY), FOVX(_FOVX), FOVY(_FOVY)
 {
 
@@ -94,7 +95,8 @@ void Camera::unwatch() {
 }
 
 void Camera::setAngle(double _theta, double _phi) {
-    if(isLocked) throw "Camera::setAngle - Exception: The camera is locked.";
+    if(isLocked)
+        throw "Camera::setAngle - exception: The camera is locked.";
     theta = _theta; phi = _phi;
     focalVec[0] = cos(theta)*cos(phi);
     focalVec[1] = sin(theta)*cos(phi);

@@ -7,10 +7,9 @@
 namespace d3Projection {
 
 class Camera {
-    bool checkPos, checkAng;
-    void _GramSchmidt();
+    bool checkPos, checkAng, isLocked;
     cv::Vec3d _aim1, _aim2;
-    bool isLocked;
+    void _GramSchmidt();
 public:
     double theta, phi; // angles of camera
     double focalLen, FOVX, FOVY;
