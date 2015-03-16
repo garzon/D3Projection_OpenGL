@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <iostream>
+#include <algorithm>
 
 #include "isceneobject.h"
 #include "camera.h"
@@ -14,7 +14,7 @@ public:
     int addObject(ISceneObject *obj);
     void removeObject(int id);
     cv::Mat render(const Camera &cam);
-    inline static cv::Vec2d transformPoint(const Camera &cam, const cv::Vec3d &point);
+    inline static cv::Vec3d transformPoint(const Camera &cam, const cv::Vec3d &point);
 };
 
 }

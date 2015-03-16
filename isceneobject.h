@@ -4,23 +4,25 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 
+#include "camera.h"
+
 namespace d3Projection {
 
 class ISceneObject {
 protected:
-    std::vector<cv::Vec2d> locatingPointsProjected;
+    std::vector<cv::Vec3d> locatingPointsProjected;
     std::vector<cv::Vec3d> locatingPoints;
 
 public:
     // method need to be overrided
-    virtual void render(cv::Mat &outputImage) const {
+    virtual void render(const Camera &cam, cv::Mat &outputImage) const {
         throw "ISceneObject::render() called. You should override the method in child class.";
     }
 
     // -------------------------------
 
     const std::vector<cv::Vec3d>& getLocatingPoints() const;
-    void pushLocatingPointProjected(const cv::Vec2d &point);
+    void pushLocatingPointProjected(const cv::Vec3d &point);
     void clean();
 };
 

@@ -6,7 +6,7 @@ void ISceneObject::clean() {
     locatingPointsProjected.clear();
 }
 
-void ISceneObject::pushLocatingPointProjected(const cv::Vec2d &point) {
+void ISceneObject::pushLocatingPointProjected(const cv::Vec3d &point) {
     locatingPointsProjected.push_back(point);
 }
 

@@ -11,20 +11,22 @@ void Scene::removeObject(int id) {
     objs.erase(objs.begin() + id);
 }
 
-inline cv::Vec2d Scene::transformPoint(const Camera &cam, const cv::Vec3d &point) {
+inline cv::Vec3d Scene::transformPoint(const Camera &cam, const cv::Vec3d &point) {
     cv::Vec3d diff = point - cam.pos;
-    cv::Mat res(0, 0, CV_64F);
+    cv::Mat_<double> res(0, 0);
     for(int i = 0; i < 3; i++) {
         res.push_back(cam.baseX[i]);
+        res.push_back(cam.baseY[i]);
         res.push_back(diff[i]);
-        res.push_back(cam.baseZ[i]);
     }
+    std::cout << res <<std::endl;
     res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(-cam.focalVec);
+    std::cout << res <<std::endl;
     double *data = res.ptr<double>();
-    if(data[1] < 0) throw "Scene::transformPoint - Cannot see the point in the camera.";
-    cv::Vec2d ret;
+    cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * cam.pixelsX;
-    ret[1] = (data[2]+1) * 0.5 * cam.pixelsY;
+    ret[1] = (data[1]+1) * 0.5 * cam.pixelsY;
+    ret[2] = data[2];
     return ret;
 }
 
@@ -33,12 +35,15 @@ cv::Mat Scene::render(const Camera &cam) {
     for(auto obj: objs) {
         const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
         obj->clean();
-        try {
-            for(const auto &point: points) {
-                obj->pushLocatingPointProjected(transformPoint(cam, point));
-            }
-            obj->render(res);
-        } catch(...) {}
+        for(const auto &point: points) {
+            obj->pushLocatingPointProjected(transformPoint(cam, point));
+        }
+    }
+    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) {
+        return p->getLocatingPoints()[0][2] < q->getLocatingPoints()[0][2];
+    });
+    for(auto obj: objs) {
+        obj->render(cam, res);
     }
     return res;
 }
