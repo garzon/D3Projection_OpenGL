@@ -36,10 +36,10 @@ void Camera::_GramSchmidt() {
 
     cv::Mat_<double> rotateMat1(0, 0);
     rotateMat1.push_back(cos(theta));
-    rotateMat1.push_back(sin(theta));
+    rotateMat1.push_back(-sin(theta));
     rotateMat1.push_back(0.0);
 
-    rotateMat1.push_back(-sin(theta));
+    rotateMat1.push_back(sin(theta));
     rotateMat1.push_back(cos(theta));
     rotateMat1.push_back(0.0);
 

@@ -22,6 +22,7 @@ public:
     // -------------------------------
 
     const std::vector<cv::Vec3d>& getLocatingPoints() const;
+    const std::vector<cv::Vec3d>& getLocatingPointsProjected() const;
     void pushLocatingPointProjected(const cv::Vec3d &point);
     void clean();
 };

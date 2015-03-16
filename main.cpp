@@ -15,7 +15,7 @@ int main() {
     SphereObject s1(Vec<double, 3>(0, 0, 0), 1.0, Scalar(255, 255, 0));
     SphereObject s2(Vec<double, 3>(2, 0, 0), 1.0, Scalar(0, 255, 0));
     Camera cam(10, 120, 120, 500, 500);
-    double theta = PI-PI/2, phi = 0;
+    double theta = PI+PI/2, phi = 0;
 
     Scene scene;
     scene.addObject(&s1); scene.addObject(&s2);

@@ -20,7 +20,7 @@ public:
     void setAngle(double _theta, double _phi);
     void setPosition(const cv::Vec3d &_pos);
     bool check() const;
-    inline cv::Vec3d mat2Vec3d(const cv::Mat &expr);
+    inline static cv::Vec3d mat2Vec3d(const cv::Mat &expr);
 };
 
 }

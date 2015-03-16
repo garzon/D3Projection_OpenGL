@@ -19,9 +19,7 @@ inline cv::Vec3d Scene::transformPoint(const Camera &cam, const cv::Vec3d &point
         res.push_back(cam.baseY[i]);
         res.push_back(diff[i]);
     }
-    std::cout << res <<std::endl;
     res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(-cam.focalVec);
-    std::cout << res <<std::endl;
     double *data = res.ptr<double>();
     cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * cam.pixelsX;
@@ -39,8 +37,8 @@ cv::Mat Scene::render(const Camera &cam) {
             obj->pushLocatingPointProjected(transformPoint(cam, point));
         }
     }
-    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) {
-        return p->getLocatingPoints()[0][2] < q->getLocatingPoints()[0][2];
+    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
+        return (p->getLocatingPointsProjected()[0][2]) < (q->getLocatingPointsProjected()[0][2]);
     });
     for(auto obj: objs) {
         obj->render(cam, res);

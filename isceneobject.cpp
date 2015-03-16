@@ -13,3 +13,7 @@ void ISceneObject::pushLocatingPointProjected(const cv::Vec3d &point) {
 const std::vector<cv::Vec3d>& ISceneObject::getLocatingPoints() const {
     return locatingPoints;
 }
+
+const std::vector<cv::Vec3d>& ISceneObject::getLocatingPointsProjected() const {
+    return locatingPointsProjected;
+}
