@@ -49,16 +49,16 @@ void Camera::_GramSchmidt() {
     rotateMat1 = rotateMat1.reshape(1, 3); // 3*3 Mat
 
     cv::Mat_<double> rotateMat2(0, 0);
-    rotateMat2.push_back(1.0);
-    rotateMat2.push_back(0.0);
-    rotateMat2.push_back(0.0);
-
-    rotateMat2.push_back(0.0);
     rotateMat2.push_back(cos(phi));
+    rotateMat2.push_back(0.0);
     rotateMat2.push_back(sin(phi));
 
     rotateMat2.push_back(0.0);
-    rotateMat2.push_back(-sin(phi));
+    rotateMat2.push_back(1.0);
+    rotateMat2.push_back(0.0);
+
+    rotateMat2.push_back(sin(-phi));
+    rotateMat2.push_back(0.0);
     rotateMat2.push_back(cos(phi));
     rotateMat2 = rotateMat2.reshape(1, 3); // 3*3 Mat
 

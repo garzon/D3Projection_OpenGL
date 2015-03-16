@@ -23,7 +23,7 @@ inline cv::Vec3d Scene::transformPoint(const Camera &cam, const cv::Vec3d &point
     double *data = res.ptr<double>();
     cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * cam.pixelsX;
-    ret[1] = (data[1]+1) * 0.5 * cam.pixelsY;
+    ret[1] = (-data[1]+1) * 0.5 * cam.pixelsY;
     ret[2] = data[2];
     return ret;
 }
