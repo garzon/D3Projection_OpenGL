@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <opencv2/highgui.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "scene.h"
 #include "sphereobject.h"
@@ -22,10 +22,19 @@ int main() {
     scene.addObject(&s3);
     scene.addObject(&s4);
 
-    cam.watch(Vec3d(0, 0, 0));
-    cam.setOrbit([](double theta) -> Vec3d {
-        return Vec3d(-5*cos(theta), -5*sin(theta), 0.0);
-    }, make_pair(0.0, 2*CV_PI), CV_PI, 0.03);
+    // orbit 1
+    /*
+    cam.setOrbit([](Camera *thisCam, double phi) -> Vec3d {
+        thisCam->setAngle(CV_PI, -phi);
+        return Vec3d(5*cos(phi), 0.0, 5*sin(phi));
+    }, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
+    */
+
+    // orbit 2
+    cam.setOrbit([](Camera *thisCam, double theta) -> Vec3d {
+        thisCam->setAngle(theta + CV_PI, 0);
+        return Vec3d(5*cos(theta), 5*sin(theta), 0.0);
+    }, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
 
     while(true) {
         Mat res(cam.pixelsX, cam.pixelsY, CV_8UC3, cv::Scalar(0));

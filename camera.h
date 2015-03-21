@@ -9,14 +9,10 @@ namespace d3Projection {
 
 class Camera {
     // stat
-    bool checkPos, checkAng, isLocked, hasOrbit;
-
-    // model method
-    cv::Vec3d _aim1, _aim2;
-    void _GramSchmidt();
+    bool checkPos, checkAng, hasOrbit;
 
     // orbit
-    std::function<cv::Vec3d (double)> _orbitFunc;
+    std::function<cv::Vec3d (Camera *, double)> _orbitFunc;
     std::pair<double, double> _orbitParamRange;
     double _step, _orbitParam;
 public:
@@ -24,7 +20,7 @@ public:
     double theta, phi; // angles of camera
     double focalLen, FOVX, FOVY;
     int pixelsX, pixelsY;
-    cv::Vec3d pos, focalVec, baseX, baseY, watchPoint;
+    cv::Vec3d pos, focalVec, baseX, baseY;
 
     // constructor
     Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY);
@@ -42,7 +38,7 @@ public:
     void unwatch();
 
     // orbit
-    void setOrbit(const std::function<cv::Vec3d (double)> &equation, const std::pair<double, double> &paramRange, double init, double step);
+    void setOrbit(const std::function<cv::Vec3d (Camera *, double)> &equation, const std::pair<double, double> &paramRange, double init, double step);
     void updateOrbitParam(double newParamVal);
     bool updatePosition();
 };
