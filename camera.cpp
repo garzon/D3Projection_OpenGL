@@ -27,9 +27,9 @@ void Camera::setAngle(double _theta, double _phi) {
     double cosTheta = cos(theta), sinTheta = sin(theta);
     double cosPhi = cos(phi), sinPhi = sin(phi);
 
-    focalVec[0] = cosTheta * cosPhi;
-    focalVec[1] = sinTheta * cosPhi;
-    focalVec[2] = sinPhi;
+    focalVec[0] = -cosTheta * cosPhi;
+    focalVec[1] = -sinTheta * cosPhi;
+    focalVec[2] = -sinPhi;
     focalVec = focalVec * focalLen;
 
     baseX[0] = -sinTheta;
@@ -83,7 +83,7 @@ inline cv::Vec3d Camera::transformPoint(const cv::Vec3d &point) {
         res.push_back(baseY[i]);
         res.push_back(diff[i]);
     }
-    res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(focalVec);
+    res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(-focalVec);
     double *data = res.ptr<double>();
     cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * pixelsX;
