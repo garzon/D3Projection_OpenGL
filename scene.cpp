@@ -11,37 +11,6 @@ void Scene::removeObject(int id) {
     objs.erase(objs.begin() + id);
 }
 
-inline cv::Vec3d Scene::transformPoint(const Camera &cam, const cv::Vec3d &point) {
-    if(!cam.check()) throw "Scene::render - Exception: The camera is not ready. Please set the parameters of the camera.";
-    cv::Vec3d diff = point - cam.pos;
-    cv::Mat_<double> res(0, 0);
-    for(int i = 0; i < 3; i++) {
-        res.push_back(cam.baseX[i]);
-        res.push_back(cam.baseY[i]);
-        res.push_back(diff[i]);
-    }
-    res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(-cam.focalVec);
-    double *data = res.ptr<double>();
-    cv::Vec3d ret;
-    ret[0] = (data[0]+1) * 0.5 * cam.pixelsX;
-    ret[1] = (-data[1]+1) * 0.5 * cam.pixelsY;
-    ret[2] = data[2];
-    return ret;
-}
-
-void Scene::render(const Camera &cam, cv::Mat &outputImage) {
-    for(auto obj: objs) {
-        const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
-        obj->clean();
-        for(const auto &point: points) {
-            obj->pushLocatingPointProjected(transformPoint(cam, point));
-        }
-    }
-    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
-        return (p->getLocatingPointsProjected()[0][2]) < (q->getLocatingPointsProjected()[0][2]);
-    });
-    if(outputImage.empty()) return;
-    for(auto obj: objs) {
-        obj->render(cam, outputImage);
-    }
+std::vector<ISceneObject *> & Scene::getObjs() {
+    return objs;
 }

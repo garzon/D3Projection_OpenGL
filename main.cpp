@@ -2,7 +2,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-#include "scene.h"
+#include "camera.h"
 #include "sphereobject.h"
 
 using namespace std;
@@ -31,18 +31,19 @@ int main() {
     */
 
     // orbit 2
+
     cam.setOrbit([](Camera *thisCam, double theta) -> Vec3d {
         thisCam->setAngle(theta + CV_PI, 0);
         return Vec3d(5*cos(theta), 5*sin(theta), 0.0);
     }, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
 
+
     while(true) {
-        Mat res(cam.pixelsX, cam.pixelsY, CV_8UC3, cv::Scalar(0));
-        scene.render(cam, res);
-        imshow("output", res);
+
+        imshow("output", cam.capture(scene));
         waitKey(10);
 
-        if(!cam.updatePosition()) {
+        if(!cam.updateOrbitPosition()) {
             cam.updateOrbitParam(0.0);
         }
     }

@@ -5,6 +5,8 @@
 #include <functional>
 #include <opencv2/opencv.hpp>
 
+#include "scene.h"
+
 namespace d3Projection {
 
 class Camera {
@@ -15,6 +17,7 @@ class Camera {
     std::function<cv::Vec3d (Camera *, double)> _orbitFunc;
     std::pair<double, double> _orbitParamRange;
     double _step, _orbitParam;
+    cv::Mat _renderedImage;
 public:
     // params of the camera
     double theta, phi; // angles of camera
@@ -32,6 +35,7 @@ public:
     // helper
     bool check() const;
     inline static cv::Vec3d mat2Vec3d(const cv::Mat &expr);
+    inline cv::Vec3d transformPoint(const cv::Vec3d &point);
 
     // watch
     void watch(const cv::Vec3d &_watchPoint);
@@ -40,7 +44,10 @@ public:
     // orbit
     void setOrbit(const std::function<cv::Vec3d (Camera *, double)> &equation, const std::pair<double, double> &paramRange, double init, double step);
     void updateOrbitParam(double newParamVal);
-    bool updatePosition();
+    bool updateOrbitPosition();
+
+    // methods
+    cv::Mat capture(Scene &scene, bool renderImage = true);
 };
 
 }

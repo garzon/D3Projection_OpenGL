@@ -30,7 +30,7 @@ void Camera::setAngle(double _theta, double _phi) {
     focalVec[0] = cosTheta * cosPhi;
     focalVec[1] = sinTheta * cosPhi;
     focalVec[2] = sinPhi;
-    focalVec = -focalVec * focalLen;
+    focalVec = focalVec * focalLen;
 
     baseX[0] = -sinTheta;
     baseX[1] = cosTheta;
@@ -40,7 +40,7 @@ void Camera::setAngle(double _theta, double _phi) {
     baseY[0] = -cosTheta * sinPhi;
     baseY[1] = -sinTheta  * sinPhi;
     baseY[2] = cosPhi;
-    baseY = -baseY * focalLen * tan(FOVY);
+    baseY = baseY * focalLen * tan(FOVY);
 
     checkAng = true;
 
@@ -63,7 +63,7 @@ void Camera::updateOrbitParam(double newParamVal) {
     _orbitParam = newParamVal;
 }
 
-bool Camera::updatePosition() {
+bool Camera::updateOrbitPosition() {
     if(!hasOrbit) throw "Camera::updatePosition() - Exception: The camera does not have orbit.";
     _orbitParam += _step;
     if(_orbitParam < _orbitParamRange.first || _orbitParam > _orbitParamRange.second) {
@@ -71,4 +71,46 @@ bool Camera::updatePosition() {
     }
     setPosition(_orbitFunc(this, _orbitParam));
     return true;
+}
+
+
+inline cv::Vec3d Camera::transformPoint(const cv::Vec3d &point) {
+    if(!check()) throw "Camera::transformPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
+    cv::Vec3d diff = point - pos;
+    cv::Mat_<double> res(0, 0);
+    for(int i = 0; i < 3; i++) {
+        res.push_back(baseX[i]);
+        res.push_back(baseY[i]);
+        res.push_back(diff[i]);
+    }
+    res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(focalVec);
+    double *data = res.ptr<double>();
+    cv::Vec3d ret;
+    ret[0] = (data[0]+1) * 0.5 * pixelsX;
+    ret[1] = (data[1]+1) * 0.5 * pixelsY;
+    ret[2] = data[2];
+    return ret;
+}
+
+cv::Mat Camera::capture(Scene &scene, bool renderImage) {
+    _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_8UC3);
+    std::vector<ISceneObject *> &objs = scene.getObjs();
+
+    for(auto obj: objs) {
+        const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
+        obj->clean();
+        for(const auto &point: points) {
+            obj->pushLocatingPointProjected(transformPoint(point));
+        }
+    }
+    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
+        return (p->getLocatingPointsProjected()[0][2]) < (q->getLocatingPointsProjected()[0][2]);
+    });
+
+    if(!renderImage) return cv::Mat();
+    for(auto obj: objs) {
+        obj->render(*this, _renderedImage);
+    }
+
+    return _renderedImage;
 }

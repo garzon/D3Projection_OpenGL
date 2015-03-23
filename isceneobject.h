@@ -4,9 +4,9 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 
-#include "camera.h"
-
 namespace d3Projection {
+
+class Camera;
 
 class ISceneObject {
 protected:

@@ -2,7 +2,9 @@
 #define SPHEREOBJECT_H
 
 #include <algorithm>
+
 #include "isceneobject.h"
+#include "camera.h"
 
 namespace d3Projection {
 
