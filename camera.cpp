@@ -43,11 +43,15 @@ void Camera::setAngle(double _theta, double _phi) {
     baseY = baseY * focalLen * tan(FOVY);
 
     checkAng = true;
-
 }
 
 bool Camera::check() const {
     return checkAng && checkPos;
+}
+
+void Camera::updateCameraParams() {
+    setPosition(pos);
+    setAngle(theta, phi);
 }
 
 void Camera::setOrbit(const std::function<cv::Vec3d (Camera *, double)> &equation, const std::pair<double, double> &paramRange, double init, double step) {

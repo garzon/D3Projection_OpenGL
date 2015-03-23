@@ -12,5 +12,5 @@ PlaneObject::PlaneObject(const cv::Vec3d &origin, const cv::Vec3d &vec1, const c
 }
 
 void PlaneObject::render(const Camera &cam, cv::Mat &outputImage) const {
-
+    // not implemented now
 }

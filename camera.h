@@ -17,10 +17,12 @@ class Camera {
     std::function<cv::Vec3d (Camera *, double)> _orbitFunc;
     std::pair<double, double> _orbitParamRange;
     double _step, _orbitParam;
+
+    // cache
     cv::Mat _renderedImage;
 public:
     // params of the camera
-    double theta, phi; // angles of camera
+    double theta, phi; // angles of camera's len
     double focalLen, FOVX, FOVY;
     int pixelsX, pixelsY;
     cv::Vec3d pos, focalVec, baseX, baseY;
@@ -28,18 +30,15 @@ public:
     // constructor
     Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY);
 
-    // basic setter
+    // basic setters
     void setAngle(double _theta, double _phi);
     void setPosition(const cv::Vec3d &_pos);
 
-    // helper
+    // helpers
     bool check() const;
+    void updateCameraParams();
     inline static cv::Vec3d mat2Vec3d(const cv::Mat &expr);
     inline cv::Vec3d transformPoint(const cv::Vec3d &point);
-
-    // watch
-    void watch(const cv::Vec3d &_watchPoint);
-    void unwatch();
 
     // orbit
     void setOrbit(const std::function<cv::Vec3d (Camera *, double)> &equation, const std::pair<double, double> &paramRange, double init, double step);
@@ -47,7 +46,7 @@ public:
     bool updateOrbitPosition();
 
     // methods
-    cv::Mat capture(Scene &scene, bool renderImage = true);
+    cv::Mat capture(Scene &scene, bool renderImage = true); // set to false to accelerate if rendered image is not needed
 };
 
 }
