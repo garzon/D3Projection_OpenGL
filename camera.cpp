@@ -108,7 +108,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
     for(auto obj: objs) {
         const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
         obj->clean();
-        obj->isProjected = true;
+        obj->lastCamera = this;
         for(const auto &point: points) {
             obj->pushLocatingPointProjected(projectPoint(point));
         }
@@ -119,7 +119,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
 
     if(!renderImage) return cv::Mat();
     for(auto obj: objs) {
-        obj->render(*this, _renderedImage);
+        obj->render(_renderedImage);
     }
 
     return _renderedImage;

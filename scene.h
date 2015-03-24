@@ -13,7 +13,7 @@ public:
     int addObject(ISceneObject *obj);
     void removeObject(int id);
     std::vector<ISceneObject *> & getObjs();
-    double getDepth(const Camera &cam, double x, double y, ISceneObject **ret = NULL) const;
+    double getDepth(double x, double y, ISceneObject **ret = NULL) const;
 };
 
 }

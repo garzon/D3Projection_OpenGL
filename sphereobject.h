@@ -13,8 +13,8 @@ class SphereObject : public ISceneObject {
     double radius;
 public:
     SphereObject(const cv::Vec3d &center, double _radius, const cv::Scalar &color);
-    void render(const Camera &cam, cv::Mat &outputImage);
-    double getDepth(const Camera &cam, double x, double y) const;
+    void render(cv::Mat &outputImage);
+    double getDepth(double x, double y) const;
 };
 
 }
