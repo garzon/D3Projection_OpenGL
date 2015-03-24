@@ -14,3 +14,18 @@ void Scene::removeObject(int id) {
 std::vector<ISceneObject *> & Scene::getObjs() {
     return objs;
 }
+
+double Scene::getDepth(const Camera &cam, double x, double y, ISceneObject **ret) const {
+    // return negative number if no depth @ (x, y)
+    if(ret != NULL) *ret = NULL;
+    double res = -1, tmp;
+    for(auto obj: objs) {
+        tmp = obj->getDepth(cam, x, y);
+        if(res < 0 || (tmp >= 0 && tmp < res)) {
+            res = tmp;
+            if(ret != NULL) *ret = obj;
+        }
+    }
+    if(ret != NULL && res < 0) *ret = NULL;
+    return res;
+}

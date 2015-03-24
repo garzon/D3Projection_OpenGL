@@ -12,14 +12,15 @@ class ISceneObject {
 protected:
     std::vector<cv::Vec3d> locatingPointsProjected;
     std::vector<cv::Vec3d> locatingPoints;
-
 public:
+    bool isProjected;
+
     // methods need to be overrided
-    virtual void render(const Camera &cam, cv::Mat &outputImage) const {
+    virtual void render(const Camera &cam, cv::Mat &outputImage) {
         throw "ISceneObject::render() called. You should override the method in child class.";
     }
 
-    virtual double getDepth(double x, double y) const {
+    virtual double getDepth(const Camera &cam, double x, double y) const {
         throw "ISceneObject::getDepth() called. You should override the method in child class.";
     }
 

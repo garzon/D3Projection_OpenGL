@@ -92,7 +92,7 @@ inline cv::Vec3d Camera::projectPoint(const cv::Vec3d &point) {
     cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * pixelsX;
     ret[1] = (data[1]+1) * 0.5 * pixelsY;
-    ret[2] = data[2] * focalLen;
+    ret[2] = focalLen / data[2];
     return ret;
 }
 
@@ -108,12 +108,13 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
     for(auto obj: objs) {
         const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
         obj->clean();
+        obj->isProjected = true;
         for(const auto &point: points) {
             obj->pushLocatingPointProjected(projectPoint(point));
         }
     }
     std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
-        return (p->getLocatingPointsProjected()[0][2]) < (q->getLocatingPointsProjected()[0][2]);
+        return (p->getLocatingPointsProjected()[0][2]) > (q->getLocatingPointsProjected()[0][2]);
     });
 
     if(!renderImage) return cv::Mat();

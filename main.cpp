@@ -41,6 +41,7 @@ int main() {
     while(true) {
 
         imshow("output", cam.capture(scene));
+        cout << scene.getDepth(cam, 250, 250) << endl;
         waitKey(10);
 
         if(!cam.updateOrbitPosition()) {
