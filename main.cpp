@@ -35,7 +35,7 @@ int main() {
     cam.setOrbit([](Camera *thisCam, double theta) -> Vec3d {
         thisCam->setAngle(theta + CV_PI, 0);
         return Vec3d(5*cos(theta), 5*sin(theta), 0.0);
-    }, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
+    }, make_pair(0.0, 2*CV_PI), 0.0, 0.01);
 
 
     while(true) {
