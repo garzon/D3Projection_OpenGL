@@ -14,6 +14,7 @@ class SphereObject : public ISceneObject {
 public:
     SphereObject(const cv::Vec3d &center, double _radius, const cv::Scalar &color);
     void render(const Camera &cam, cv::Mat &outputImage) const;
+    double getDepth(double x, double y) const;
 };
 
 }

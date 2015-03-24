@@ -14,9 +14,13 @@ protected:
     std::vector<cv::Vec3d> locatingPoints;
 
 public:
-    // method need to be overrided
+    // methods need to be overrided
     virtual void render(const Camera &cam, cv::Mat &outputImage) const {
         throw "ISceneObject::render() called. You should override the method in child class.";
+    }
+
+    virtual double getDepth(double x, double y) const {
+        throw "ISceneObject::getDepth() called. You should override the method in child class.";
     }
 
     // -------------------------------

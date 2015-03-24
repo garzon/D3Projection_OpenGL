@@ -38,7 +38,8 @@ public:
     bool check() const;
     void updateCameraParams();
     inline static cv::Vec3d mat2Vec3d(const cv::Mat &expr);
-    inline cv::Vec3d transformPoint(const cv::Vec3d &point);
+    inline cv::Vec3d projectPoint(const cv::Vec3d &point);
+    inline cv::Vec3d unprojectPoint(const cv::Vec3d &point);
 
     // orbit
     void setOrbit(const std::function<cv::Vec3d (Camera *, double)> &equation, const std::pair<double, double> &paramRange, double init, double step);

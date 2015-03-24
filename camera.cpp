@@ -78,8 +78,8 @@ bool Camera::updateOrbitPosition() {
 }
 
 
-inline cv::Vec3d Camera::transformPoint(const cv::Vec3d &point) {
-    if(!check()) throw "Camera::transformPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
+inline cv::Vec3d Camera::projectPoint(const cv::Vec3d &point) {
+    if(!check()) throw "Camera::projectPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
     cv::Vec3d diff = point - pos;
     cv::Mat_<double> res(0, 0);
     for(int i = 0; i < 3; i++) {
@@ -92,8 +92,13 @@ inline cv::Vec3d Camera::transformPoint(const cv::Vec3d &point) {
     cv::Vec3d ret;
     ret[0] = (data[0]+1) * 0.5 * pixelsX;
     ret[1] = (data[1]+1) * 0.5 * pixelsY;
-    ret[2] = data[2];
+    ret[2] = data[2] * focalLen;
     return ret;
+}
+
+inline cv::Vec3d Camera::unprojectPoint(const cv::Vec3d &point) {
+    if(!check()) throw "Camera::unprojectPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
+    return pos - (focalVec + point[0] * baseX + point[1] * baseY) / point[2];
 }
 
 cv::Mat Camera::capture(Scene &scene, bool renderImage) {
@@ -104,7 +109,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
         const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
         obj->clean();
         for(const auto &point: points) {
-            obj->pushLocatingPointProjected(transformPoint(point));
+            obj->pushLocatingPointProjected(projectPoint(point));
         }
     }
     std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
