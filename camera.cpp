@@ -22,7 +22,6 @@ Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int
     glLoadIdentity();
     gluPerspective(FOVX, (GLfloat)pixelsX/(GLfloat)pixelsY, 0.01f, 100000000.0f);
 
-    glMatrixMode(GL_MODELVIEW);
 }
 
 void Camera::setPosition(const cv::Vec3d &_pos) {
@@ -101,16 +100,19 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);      // 黑色背景
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 5, 0, cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
-    //gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
+    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
 
     _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();
 
     for(auto obj: objs) {
         obj->lastCamera = this;
+        glPushMatrix();
         obj->render();
+        glPopMatrix();
     }
 
     if(!renderImage) {
