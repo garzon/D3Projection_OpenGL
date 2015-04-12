@@ -28,16 +28,16 @@ int main(int argc, char **argv) {
     scene.addObject(&s4);
 
 
-    /*
+
     FILE *f = fopen("/home/garzon/xyz.txt", "r");
     while(fscanf(f, "%lf %lf %lf", &x, &y, &z) > 0) {
         SphereObject *tmp = new SphereObject (Vec<double, 3>(x, y, z), 0.01, Scalar(255, 255, 255));
         scene.addObject(tmp);
     }
     fclose(f);
-    */
 
-    Camera cam(13, 150, 150, 700, 700);
+
+    Camera cam(13, 120, 120, 700, 700);
 
     x=y=z=theta=phi=0;
 

@@ -20,7 +20,10 @@ Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(FOVX, (GLfloat)pixelsX/(GLfloat)pixelsY, 0.01f, 100000000.0f);
+    gluPerspective(FOVY, tan(FOVX/360.0*CV_PI)/tan(FOVY/360.0*CV_PI), 0.01f, 100000000.0f);
+
+    FOVX = FOVX / 360.0 * CV_PI;
+    FOVY = FOVY / 360.0 * CV_PI;
 
 }
 
@@ -47,12 +50,12 @@ void Camera::setAngle(double _theta, double _phi) {
     focalVec[1] = -sinTheta * cosPhi;
     focalVec[2] = -sinPhi;
     focalVec = focalVec * focalLen;
-
+    /*
     baseX[0] = -sinTheta;
     baseX[1] = cosTheta;
     baseX[2] = 0;
     baseX = baseX * focalLen * tan(FOVX);
-
+    */
     baseY[0] = -cosTheta * sinPhi;
     baseY[1] = -sinTheta  * sinPhi;
     baseY[2] = cosPhi;
@@ -103,7 +106,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), -baseY[0], -baseY[1], -baseY[2]);
+    gluLookAt(pos[0], pos[1], pos[2], -focalVec[0], -focalVec[1], -focalVec[2], baseY[0], baseY[1], baseY[2]);
 
     _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();
