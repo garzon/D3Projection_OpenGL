@@ -24,12 +24,15 @@ class Camera {
 
     // cache
     cv::Mat _renderedImage;
+
 public:
     // params of the camera
     double theta, phi; // angles of camera's len
     double FOVX, FOVY;
     int pixelsX, pixelsY;
     cv::Vec3d pos, focalVec, baseX, baseY;
+
+    const float zNear = 2.0, zFar = 30.0;
 
     // constructor
     Camera(double _FOVX, double _FOVY, int _pixelsX, int _pixelsY);

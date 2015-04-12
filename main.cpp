@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include "camera.h"
@@ -15,7 +16,6 @@ int main(int argc, char **argv) {
     double x, y, z, theta, phi;
 
     glutInit(&argc, argv);
-
 
     SphereObject s1(Vec<double, 3>(0, 0, 0), 1.0, Scalar(255, 0, 0));
     SphereObject s2(Vec<double, 3>(2, 0, 0), 1.0, Scalar(0, 255, 0));
@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
         scene.addObject(tmp);
     }
     fclose(f);
-
     */
     Camera cam(90, 90, 700, 700);
 
@@ -77,11 +76,13 @@ int main(int argc, char **argv) {
         //cam.setPosition(Vec3d(x, y, z));
         //cam.setAngle(theta, phi);
         cv::Mat tmp = cam.capture(scene);
-        imshow("output", tmp);
+        //cv::normalize(tmp, tmp, 0.0, 255.0, NORM_MINMAX, CV_8U);
+        if(!tmp.empty()) imshow("output", tmp);
         //cout << s4.getDepth(250, 250) << endl;
-        char c = waitKey(1);
+        char c = waitKey();
         //controller(c);
-        cout << scene.getDepth(250,250) <<endl;
+        //for(int i=0; i<2000*128*5; i++) float tmp = scene.getDepth(350,350);
+        cout << scene.getDepth(350,350) <<endl;
 
         if(!cam.updateOrbitPosition()) {
             cam.updateOrbitParam(0.0);

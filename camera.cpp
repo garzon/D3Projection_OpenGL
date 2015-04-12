@@ -20,7 +20,7 @@ Camera::Camera(double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(FOVY, tan(FOVX/360.0*CV_PI)/tan(FOVY/360.0*CV_PI), 0.01f, 100000000.0f);
+    gluPerspective(FOVY, tan(FOVX/360.0*CV_PI)/tan(FOVY/360.0*CV_PI), zNear, zFar);
 
     FOVX = FOVX / 360.0 * CV_PI;
     FOVY = FOVY / 360.0 * CV_PI;
@@ -102,7 +102,6 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
     glLoadIdentity();
     gluLookAt(pos[0], pos[1], pos[2], -focalVec[0], -focalVec[1], -focalVec[2], baseY[0], baseY[1], baseY[2]);
 
-    _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();
 
     for(auto obj: objs) {
@@ -112,14 +111,19 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
         glPopMatrix();
     }
 
+    scene.depthImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
+    glReadPixels(0, 0, pixelsX, pixelsY, GL_DEPTH_COMPONENT, GL_FLOAT, scene.depthImage.data);
+    cv::flip(scene.depthImage, scene.depthImage, 0);
+    scene.depthImage = - zFar * zNear / (scene.depthImage*(zFar-zNear) - zFar);
+
     if(!renderImage) {
         glFlush();
         return cv::Mat();
     }
 
-    glReadPixels(0, 0, pixelsX, pixelsY, GL_DEPTH_COMPONENT, GL_FLOAT, _renderedImage.data);
+    _renderedImage = cv::Mat(pixelsY, pixelsX, CV_8UC3);
+    glReadPixels(0, 0, pixelsX, pixelsY, GL_BGR, GL_UNSIGNED_BYTE, _renderedImage.data);
     cv::flip(_renderedImage, _renderedImage, 0);
-    scene.depthImage = _renderedImage;
 
     glFlush();
 
