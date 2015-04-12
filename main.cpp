@@ -11,6 +11,9 @@ using namespace cv;
 
 int main(int argc, char **argv) {
 
+    Scene scene;
+    double x, y, z, theta, phi;
+
     glutInit(&argc, argv);
 
     /*
@@ -18,15 +21,21 @@ int main(int argc, char **argv) {
     SphereObject s2(Vec<double, 3>(2, 0, 0), 1.0, Scalar(0, 255, 0));
     SphereObject s3(Vec<double, 3>(0, 2, 0), 1.0, Scalar(0, 0, 255));
     SphereObject s4(Vec<double, 3>(0, 10, 0), 1.0, Scalar(255, 255, 255));
+
+    scene.addObject(&s1);
+    scene.addObject(&s2);
+    scene.addObject(&s3);
+    scene.addObject(&s4);
     */
+
+
     FILE *f = fopen("/home/garzon/xyz.txt", "r");
-    Scene scene;
-    double x, y, z, theta, phi;
     while(fscanf(f, "%lf %lf %lf", &x, &y, &z) > 0) {
         SphereObject *tmp = new SphereObject (Vec<double, 3>(x, y, z), 0.01, Scalar(255, 255, 255));
         scene.addObject(tmp);
     }
     fclose(f);
+
 
     Camera cam(13, 150, 150, 700, 700);
 
@@ -48,12 +57,12 @@ int main(int argc, char **argv) {
     };
 
     // orbit 1
-
-    //cam.setOrbit([](Camera *thisCam, double phi) -> Vec3d {
-    //    thisCam->setAngle(CV_PI, -phi);
-    //    return Vec3d(10*cos(phi), 0.0, 10*sin(phi));
-    //}, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
-
+    /*
+    cam.setOrbit([](Camera *thisCam, double phi) -> Vec3d {
+        thisCam->setAngle(CV_PI, -phi);
+        return Vec3d(10*cos(phi), 0.0, 10*sin(phi));
+    }, make_pair(0.0, 2*CV_PI), 0.0, 0.03);
+    */
 
     // orbit 2
 
