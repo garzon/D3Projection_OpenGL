@@ -19,4 +19,7 @@ HEADERS += \
     planeobject.h
 
 
-LIBS += /usr/local/lib/libopencv*.so
+LIBS += /usr/lib/libGL.so \
+/usr/lib/libGL*.so \
+/usr/local/lib/libglut.so \
+/usr/local/lib/libopencv*.so

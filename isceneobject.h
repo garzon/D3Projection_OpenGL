@@ -16,7 +16,7 @@ public:
     const Camera *lastCamera;
 
     // methods need to be overrided
-    virtual void render(cv::Mat &outputImage) {
+    virtual void render() {
         throw "ISceneObject::render() called. You should override the method in child class.";
     }
 

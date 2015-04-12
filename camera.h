@@ -3,6 +3,10 @@
 
 #include <cmath>
 #include <functional>
+
+#include <GL/glew.h>
+#include <GL/glut.h>
+
 #include <opencv2/opencv.hpp>
 
 #include "scene.h"

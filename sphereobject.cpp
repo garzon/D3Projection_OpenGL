@@ -10,26 +10,12 @@ SphereObject::SphereObject(const cv::Vec3d &center, double _radius, const cv::Sc
     locatingPoints.push_back(center);
 }
 
-void SphereObject::render(cv::Mat &outputImage) {
+void SphereObject::render() {
     if(lastCamera == NULL) throw "SphereObject::render - Exception: Please call Camera::capture first.";
-    if(locatingPointsProjected[0][2] > 0) {
-        double radiusProjected = radius * lastCamera->focalLen / locatingPointsProjected[0][2];
-        cv::Size2f siz(radiusProjected / cv::norm(lastCamera->baseY) * lastCamera->pixelsY / 2.0,
-                       radiusProjected / cv::norm(lastCamera->baseX) * lastCamera->pixelsX / 2.0);
-        cv::Point2d coor(locatingPointsProjected[0][0], locatingPointsProjected[0][1]);
-        cv::ellipse(outputImage, coor, siz, 0, 0, 360, _color, CV_FILLED);
-    }
+
+    glLoadIdentity();
+    glColor3f(_color[0]/255.0, _color[1]/255.0, _color[2]/255.0);
+    glTranslatef(locatingPoints[0][0], locatingPoints[0][1], locatingPoints[0][2]);
+    gluSphere(gluNewQuadric(), radius, 10, 10);
 }
 
-double SphereObject::getDepth(double x, double y) const {
-    if(lastCamera == NULL) throw "SphereObject::getDepth - Exception: Please call Camera::capture first.";
-    if(locatingPointsProjected[0][2] < 0) return -1;
-    double coeff = 2.0 * locatingPointsProjected[0][2] / lastCamera->focalLen;
-    double diffX = (x - locatingPointsProjected[0][0]) * coeff * cv::norm(lastCamera->baseX) / lastCamera->pixelsX,
-           diffY = (y - locatingPointsProjected[0][1]) * coeff * cv::norm(lastCamera->baseY) / lastCamera->pixelsY;
-    double diffSqr = diffX * diffX + diffY * diffY;
-    double radiusSqr = radius * radius;
-    if(diffSqr <= radiusSqr) {
-        return locatingPointsProjected[0][2] - cv::sqrt(radiusSqr - diffSqr);
-    } else return -1;
-}

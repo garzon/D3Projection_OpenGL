@@ -6,7 +6,14 @@ Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int
     hasOrbit(false),
     checkAng(false), checkPos(false), focalLen(focalLength),
     pixelsX(_pixelsX), pixelsY(_pixelsY), FOVX(_FOVX), FOVY(_FOVY)
-{}
+{
+    glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
+
+    glutInitWindowSize(pixelsX, pixelsY);    //显示框大小
+
+    glutInitWindowPosition(200,400); //确定显示框左上角的位置
+    glutCreateWindow("Camera");
+}
 
 void Camera::setPosition(const cv::Vec3d &_pos) {
     pos = _pos;
@@ -77,50 +84,40 @@ bool Camera::updateOrbitPosition() {
     return true;
 }
 
-
-inline cv::Vec3d Camera::projectPoint(const cv::Vec3d &point) {
-    if(!check()) throw "Camera::projectPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
-    cv::Vec3d diff = point - pos;
-    cv::Mat_<double> res(0, 0);
-    for(int i = 0; i < 3; i++) {
-        res.push_back(baseX[i]);
-        res.push_back(baseY[i]);
-        res.push_back(diff[i]);
-    }
-    res = res.reshape(1, 3).inv(cv::DECOMP_SVD) * cv::Mat(-focalVec);
-    double *data = res.ptr<double>();
-    cv::Vec3d ret;
-    ret[0] = (data[0]+1) * 0.5 * pixelsX;
-    ret[1] = (data[1]+1) * 0.5 * pixelsY;
-    ret[2] = focalLen / data[2];
-    return ret;
-}
-
-inline cv::Vec3d Camera::unprojectPoint(const cv::Vec3d &point) {
-    if(!check()) throw "Camera::unprojectPoint() - Exception: The camera is not ready. Please set the parameters of the camera.";
-    return pos - (focalVec + point[0] * baseX + point[1] * baseY) / point[2];
-}
-
 cv::Mat Camera::capture(Scene &scene, bool renderImage) {
-    _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_8UC3);
+
+    if(!check()) throw "Camera::capture() - Exception: Please set up params of the camera first.";
+
+    glEnable(GL_DEPTH_TEST);
+
+    glViewport(0,0,pixelsX, pixelsY);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(FOVX, (GLfloat)pixelsX/(GLfloat)pixelsY, 0.01f, 100000000.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);      // 黑色背景
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glLoadIdentity();
+    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
+
+    _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();
 
     for(auto obj: objs) {
-        const std::vector<cv::Vec3d> &points = obj->getLocatingPoints();
-        obj->clean();
         obj->lastCamera = this;
-        for(const auto &point: points) {
-            obj->pushLocatingPointProjected(projectPoint(point));
-        }
+        obj->render();
     }
-    std::sort(objs.begin(), objs.end(), [](ISceneObject *p, ISceneObject *q) -> bool {
-        return (p->getLocatingPointsProjected()[0][2]) > (q->getLocatingPointsProjected()[0][2]);
-    });
 
     if(!renderImage) return cv::Mat();
-    for(auto obj: objs) {
-        obj->render(_renderedImage);
-    }
+
+    glReadPixels(0, 0, pixelsX, pixelsY, GL_DEPTH_COMPONENT, GL_FLOAT, _renderedImage.data);
+    cv::flip(_renderedImage, _renderedImage, 0);
+
+    glFlush();
 
     return _renderedImage;
 }
