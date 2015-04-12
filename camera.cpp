@@ -103,7 +103,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
+    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), -baseY[0], -baseY[1], -baseY[2]);
 
     _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();

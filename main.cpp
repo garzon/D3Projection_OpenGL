@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 
     glutInit(&argc, argv);
 
-    /*
+
     SphereObject s1(Vec<double, 3>(0, 0, 0), 1.0, Scalar(255, 0, 0));
     SphereObject s2(Vec<double, 3>(2, 0, 0), 1.0, Scalar(0, 255, 0));
     SphereObject s3(Vec<double, 3>(0, 2, 0), 1.0, Scalar(0, 0, 255));
@@ -26,16 +26,16 @@ int main(int argc, char **argv) {
     scene.addObject(&s2);
     scene.addObject(&s3);
     scene.addObject(&s4);
-    */
 
 
+    /*
     FILE *f = fopen("/home/garzon/xyz.txt", "r");
     while(fscanf(f, "%lf %lf %lf", &x, &y, &z) > 0) {
         SphereObject *tmp = new SphereObject (Vec<double, 3>(x, y, z), 0.01, Scalar(255, 255, 255));
         scene.addObject(tmp);
     }
     fclose(f);
-
+    */
 
     Camera cam(13, 150, 150, 700, 700);
 
