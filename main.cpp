@@ -28,14 +28,14 @@ int main(int argc, char **argv) {
     scene.addObject(&s3);
     scene.addObject(&s4);
 
-
+    /*
     FILE *f = fopen("/home/garzon/xyz.txt", "r");
     while(fscanf(f, "%lf %lf %lf", &x, &y, &z) > 0) {
         SphereObject *tmp = new SphereObject (Vec<double, 3>(x, y, z), 0.01, Scalar(255, 255, 255));
         scene.addObject(tmp);
     }
     fclose(f);
-
+    */
 
     Camera cam(90, 90, 700, 700);
 
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
 
     while(true) {
 
-        cv::Mat tmp = cam.capture(scene, false);
+        cv::Mat tmp = cam.capture(scene);
 
         if(!tmp.empty()) imshow("output", tmp);
 
