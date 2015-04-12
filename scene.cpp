@@ -15,17 +15,7 @@ std::vector<ISceneObject *> & Scene::getObjs() {
     return objs;
 }
 
-double Scene::getDepth(double x, double y, ISceneObject **ret) const {
-    // return negative number if no depth @ (x, y)
-    if(ret != NULL) *ret = NULL;
-    double res = -1, tmp;
-    for(auto obj: objs) {
-        tmp = obj->getDepth(x, y);
-        if(res < 0 || (tmp >= 0 && tmp < res)) {
-            res = tmp;
-            if(ret != NULL) *ret = obj;
-        }
-    }
-    if(ret != NULL && res < 0) *ret = NULL;
-    return res;
+float Scene::getDepth(int x, int y) const {
+    if(depthImage.empty()) throw "Scene::getDepth() - Exception: Camera did not generate a depth image.";
+    return depthImage.at<float>(x, y);
 }

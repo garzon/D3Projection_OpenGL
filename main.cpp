@@ -65,9 +65,10 @@ int main(int argc, char **argv) {
 
     while(true) {
 
-        cam.setPosition(Vec3d(x, y, z));
-        cam.setAngle(theta, phi);
-        imshow("output", cam.capture(scene));
+        //cam.setPosition(Vec3d(x, y, z));
+        //cam.setAngle(theta, phi);
+        cv::Mat tmp = cam.capture(scene);
+        imshow("output", tmp);
         //cout << s4.getDepth(250, 250) << endl;
         char c = waitKey(1);
         //controller(c);

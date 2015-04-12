@@ -9,11 +9,12 @@ namespace d3Projection {
 
 class Scene {
     std::vector<ISceneObject *> objs;
+    cv::Mat depthImage;
 public:
     int addObject(ISceneObject *obj);
     void removeObject(int id);
     std::vector<ISceneObject *> & getObjs();
-    double getDepth(double x, double y, ISceneObject **ret = NULL) const;
+    float getDepth(int x, int y) const;
 };
 
 }

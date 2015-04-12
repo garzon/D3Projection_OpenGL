@@ -13,6 +13,16 @@ Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int
 
     glutInitWindowPosition(200,400); //确定显示框左上角的位置
     glutCreateWindow("Camera");
+
+    glEnable(GL_DEPTH_TEST);
+
+    glViewport(0, 0, pixelsX, pixelsY);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(FOVX, (GLfloat)pixelsX/(GLfloat)pixelsY, 0.01f, 100000000.0f);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void Camera::setPosition(const cv::Vec3d &_pos) {
@@ -88,21 +98,12 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
 
     if(!check()) throw "Camera::capture() - Exception: Please set up params of the camera first.";
 
-    glEnable(GL_DEPTH_TEST);
-
-    glViewport(0,0,pixelsX, pixelsY);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(FOVX, (GLfloat)pixelsX/(GLfloat)pixelsY, 0.01f, 100000000.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);      // 黑色背景
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
+    gluLookAt(0, 5, 0, cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
+    //gluLookAt(pos[0], pos[1], pos[2], cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi), 0.0, 0.0, 1.0);
 
     _renderedImage = cv::Mat::zeros(pixelsY, pixelsX, CV_32F);
     std::vector<ISceneObject *> &objs = scene.getObjs();
@@ -112,7 +113,10 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
         obj->render();
     }
 
-    if(!renderImage) return cv::Mat();
+    if(!renderImage) {
+        glFlush();
+        return cv::Mat();
+    }
 
     glReadPixels(0, 0, pixelsX, pixelsY, GL_DEPTH_COMPONENT, GL_FLOAT, _renderedImage.data);
     cv::flip(_renderedImage, _renderedImage, 0);

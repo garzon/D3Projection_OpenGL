@@ -8,15 +8,13 @@ SOURCES += main.cpp \
     sphereobject.cpp \
     scene.cpp \
     camera.cpp \
-    isceneobject.cpp \
-    planeobject.cpp
+    isceneobject.cpp
 
 HEADERS += \
     sphereobject.h \
     scene.h \
     camera.h \
-    isceneobject.h \
-    planeobject.h
+    isceneobject.h
 
 
 LIBS += /usr/lib/libGL.so \

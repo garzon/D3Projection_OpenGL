@@ -18,7 +18,7 @@ CXXFLAGS      = -pipe -g -std=c++0x -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I../../Qt5.3.1/5.3/gcc_64/mkspecs/linux-g++ -I.
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/garzon/Qt5.3.1/5.3/gcc_64
-LIBS          = $(SUBLIBS) /usr/local/lib/libopencv*.so 
+LIBS          = $(SUBLIBS) /usr/lib/libGL.so /usr/lib/libGL*.so /usr/local/lib/libglut.so /usr/local/lib/libopencv*.so 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /home/garzon/Qt5.3.1/5.3/gcc_64/bin/qmake
@@ -49,14 +49,12 @@ SOURCES       = main.cpp \
 		sphereobject.cpp \
 		scene.cpp \
 		camera.cpp \
-		isceneobject.cpp \
-		planeobject.cpp 
+		isceneobject.cpp 
 OBJECTS       = main.o \
 		sphereobject.o \
 		scene.o \
 		camera.o \
-		isceneobject.o \
-		planeobject.o
+		isceneobject.o
 DIST          = ../../Qt5.3.1/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt5.3.1/5.3/gcc_64/mkspecs/common/shell-unix.conf \
 		../../Qt5.3.1/5.3/gcc_64/mkspecs/common/unix.conf \
@@ -163,8 +161,7 @@ DIST          = ../../Qt5.3.1/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		sphereobject.cpp \
 		scene.cpp \
 		camera.cpp \
-		isceneobject.cpp \
-		planeobject.cpp
+		isceneobject.cpp
 QMAKE_TARGET  = D3Projection
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = D3Projection
@@ -438,33 +435,29 @@ compiler_clean:
 
 ####### Compile
 
-main.o: main.cpp scene.h \
+main.o: main.cpp camera.h \
+		scene.h \
 		isceneobject.h \
-		camera.h \
 		sphereobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 sphereobject.o: sphereobject.cpp sphereobject.h \
 		isceneobject.h \
-		camera.h
+		camera.h \
+		scene.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sphereobject.o sphereobject.cpp
 
 scene.o: scene.cpp scene.h \
-		isceneobject.h \
-		camera.h
+		isceneobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o scene.o scene.cpp
 
-camera.o: camera.cpp camera.h
+camera.o: camera.cpp camera.h \
+		scene.h \
+		isceneobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o camera.o camera.cpp
 
-isceneobject.o: isceneobject.cpp isceneobject.h \
-		camera.h
+isceneobject.o: isceneobject.cpp isceneobject.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o isceneobject.o isceneobject.cpp
-
-planeobject.o: planeobject.cpp planeobject.h \
-		isceneobject.h \
-		camera.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o planeobject.o planeobject.cpp
 
 ####### Install
 
