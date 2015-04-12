@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -28,18 +29,19 @@ int main(int argc, char **argv) {
     scene.addObject(&s4);
 
 
-    /*
     FILE *f = fopen("/home/garzon/xyz.txt", "r");
     while(fscanf(f, "%lf %lf %lf", &x, &y, &z) > 0) {
         SphereObject *tmp = new SphereObject (Vec<double, 3>(x, y, z), 0.01, Scalar(255, 255, 255));
         scene.addObject(tmp);
     }
     fclose(f);
-    */
+
+
     Camera cam(90, 90, 700, 700);
 
     x=y=z=theta=phi=0;
 
+    /*
     auto controller = [&](char c) {
         switch(c) {
             case 'a': x+=0.3; break;
@@ -54,6 +56,7 @@ int main(int argc, char **argv) {
             case 't': phi-=0.03; break;
         }
     };
+    */
 
     // orbit 1
 
@@ -73,15 +76,14 @@ int main(int argc, char **argv) {
 
     while(true) {
 
-        //cam.setPosition(Vec3d(x, y, z));
-        //cam.setAngle(theta, phi);
-        cv::Mat tmp = cam.capture(scene);
-        //cv::normalize(tmp, tmp, 0.0, 255.0, NORM_MINMAX, CV_8U);
+        cv::Mat tmp = cam.capture(scene, false);
+
         if(!tmp.empty()) imshow("output", tmp);
-        //cout << s4.getDepth(250, 250) << endl;
-        char c = waitKey();
-        //controller(c);
+
+        char c = waitKey(1);
+
         //for(int i=0; i<2000*128*5; i++) float tmp = scene.getDepth(350,350);
+
         cout << scene.getDepth(350,350) <<endl;
 
         if(!cam.updateOrbitPosition()) {
