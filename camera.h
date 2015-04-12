@@ -27,12 +27,12 @@ class Camera {
 public:
     // params of the camera
     double theta, phi; // angles of camera's len
-    double focalLen, FOVX, FOVY;
+    double FOVX, FOVY;
     int pixelsX, pixelsY;
     cv::Vec3d pos, focalVec, baseX, baseY;
 
     // constructor
-    Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY);
+    Camera(double _FOVX, double _FOVY, int _pixelsX, int _pixelsY);
 
     // basic setters
     void setAngle(double _theta, double _phi);

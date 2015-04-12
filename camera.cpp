@@ -2,9 +2,9 @@
 
 using namespace d3Projection;
 
-Camera::Camera(double focalLength, double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
+Camera::Camera(double _FOVX, double _FOVY, int _pixelsX, int _pixelsY) :
     hasOrbit(false),
-    checkAng(false), checkPos(false), focalLen(focalLength),
+    checkAng(false), checkPos(false),
     pixelsX(_pixelsX), pixelsY(_pixelsY), FOVX(_FOVX), FOVY(_FOVY)
 {
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
@@ -49,17 +49,11 @@ void Camera::setAngle(double _theta, double _phi) {
     focalVec[0] = -cosTheta * cosPhi;
     focalVec[1] = -sinTheta * cosPhi;
     focalVec[2] = -sinPhi;
-    focalVec = focalVec * focalLen;
-    /*
-    baseX[0] = -sinTheta;
-    baseX[1] = cosTheta;
-    baseX[2] = 0;
-    baseX = baseX * focalLen * tan(FOVX);
-    */
+
     baseY[0] = -cosTheta * sinPhi;
     baseY[1] = -sinTheta  * sinPhi;
     baseY[2] = cosPhi;
-    baseY = baseY * focalLen * tan(FOVY);
+    baseY = baseY * tan(FOVY);
 
     checkAng = true;
 }
@@ -125,6 +119,7 @@ cv::Mat Camera::capture(Scene &scene, bool renderImage) {
 
     glReadPixels(0, 0, pixelsX, pixelsY, GL_DEPTH_COMPONENT, GL_FLOAT, _renderedImage.data);
     cv::flip(_renderedImage, _renderedImage, 0);
+    scene.depthImage = _renderedImage;
 
     glFlush();
 
